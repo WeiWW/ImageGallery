@@ -1,0 +1,40 @@
+# Android Studio
+.idea/
+.gradle/
+local.properties
+*.iml
+
+# Built application files
+*.apk
+*.ap_
+*.aab
+
+# Gradle files
+/build/
+!gradle-wrapper.jar
+gradle/wrapper/gradle-wrapper.properties
+
+# Kotlin
+*.class
+*.jar
+*.war
+*.ear
+*.db
+*.sqlite
+*.zip
+*.tar.gz
+*.log
+
+# Android
+*.log
+*.keystore
+*.jks
+
+# Proguard
+proguard/
+proguard-rules.pro
+
+# Miscellaneous
+.DS_Store
+*.swp
+*.swo
