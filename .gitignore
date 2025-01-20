@@ -11,19 +11,6 @@ local.properties
 
 # Gradle files
 /build/
-!gradle-wrapper.jar
-gradle/wrapper/gradle-wrapper.properties
-
-# Kotlin
-*.class
-*.jar
-*.war
-*.ear
-*.db
-*.sqlite
-*.zip
-*.tar.gz
-*.log
 
 # Android
 *.log
