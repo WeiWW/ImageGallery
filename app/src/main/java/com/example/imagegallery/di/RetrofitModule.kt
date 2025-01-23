@@ -2,6 +2,7 @@ package com.example.imagegallery.di
 
 import com.example.imagegallery.BuildConfig
 import com.example.imagegallery.data.source.remote.auth.AuthApi
+import com.example.imagegallery.data.source.remote.image.ImageApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,6 +17,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 @InstallIn(SingletonComponent::class)
 object RetrofitModule {
 
+    @Provides
+    @Singleton
+    fun provideImageApi(retrofit: Retrofit): ImageApi {
+        return retrofit.create(ImageApi::class.java)
+    }
 
     @Provides
     @Singleton

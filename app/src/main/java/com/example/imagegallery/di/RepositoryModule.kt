@@ -2,8 +2,11 @@ package com.example.imagegallery.di
 
 import com.example.imagegallery.data.repository.TokenRepository
 import com.example.imagegallery.data.repository.TokenRepositoryImpl
+import com.example.imagegallery.data.repository.image.ImageRepository
+import com.example.imagegallery.data.repository.image.ImageRepositoryImpl
 import com.example.imagegallery.data.source.local.TokenLocalDataSource
 import com.example.imagegallery.data.source.remote.auth.TokenRemoteDataSource
+import com.example.imagegallery.data.source.remote.image.ImageDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -28,5 +31,15 @@ class RepositoryModule {
         ioDispatcher: CoroutineDispatcher
     ): TokenRepository {
         return TokenRepositoryImpl(tokenRemoteDataSource, tokenLocalDataSource, ioDispatcher)
+    }
+
+    @Provides
+    @Singleton
+    fun provideImageRepository(
+        tokenRepository: TokenRepository,
+        imageDataSource: ImageDataSource,
+        ioDispatcher: CoroutineDispatcher
+    ): ImageRepository {
+        return ImageRepositoryImpl(tokenRepository = tokenRepository, imageDataSource, ioDispatcher)
     }
 }
