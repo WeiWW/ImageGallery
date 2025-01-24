@@ -8,14 +8,14 @@ sealed class Result<out R> {
     override fun toString(): String = when (this) {
         is Success<*> -> "Success[data=$data]"
         is Error -> "Error[exception=$errorMsg]"
-        is Unauthorized -> "Error[exception=401Unauthorized]"
+        is Unauthorized -> "Error[exception=Unauthorized]"
     }
 }
 
 val Result<*>.isSuccess
     get() = this is Result.Success
 
-val Result<*>.is401Error
+val Result<*>.isUnauthorized
     get() = this is Result.Unauthorized
 
 fun <T> Result<T>.getOrNull(): T? = (this as? Result.Success)?.data
