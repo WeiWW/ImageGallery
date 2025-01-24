@@ -64,7 +64,9 @@ class TokenRepositoryImpl @Inject constructor(
                     refreshToken = body.refreshToken
                 )
                 Result.Success(body.accessToken)
-            } else {
+            } else if(response.code() == 401){
+                Result.Unauthorized
+            }else {
                 Result.Error(response.errorBody()?.string() ?: "Unknown error")
             }
         } catch (e: Exception) {

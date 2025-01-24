@@ -183,8 +183,7 @@ class TokenRepositoryImplTest {
 
         val result = tokenRepository.refreshToken()
 
-        result `should be instance of` Result.Error::class
-        result.getErrorMsg() shouldBeEqualTo ERROR_MSG
+        result `should be instance of` Result.Unauthorized::class
         coVerify (exactly = 1){ tokenLocalDataSource.getRefreshToken() }
         coVerify(exactly = 1){ tokenRemoteDataSource.refreshToken(any()) }
         coVerify(exactly = 0) { tokenLocalDataSource.saveTokens(any(), any()) }

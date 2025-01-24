@@ -1,7 +1,6 @@
 package com.example.imagegallery.data.repository.image
 
 import com.example.imagegallery.data.common.Result
-import com.example.imagegallery.data.common.getErrorMsg
 import com.example.imagegallery.data.repository.TokenRepository
 import com.example.imagegallery.data.source.remote.image.ImageDataSource
 import com.example.imagegallery.data.source.remote.image.model.Image
@@ -23,6 +22,8 @@ class ImageRepositoryImpl @Inject constructor(
                     val response = imageDataSource.getImages(token)
                     if (response.isSuccessful) {
                         Result.Success(response.body()?.images ?: emptyList())
+                    } else if (response.code() == 401) {
+                        Result.Unauthorized
                     } else {
                         Result.Error("Failed to get images: ${response.code()}")
                     }
@@ -40,6 +41,8 @@ class ImageRepositoryImpl @Inject constructor(
                     val response = imageDataSource.uploadImage(token, image)
                     if (response.isSuccessful) {
                         Result.Success(Unit)
+                    } else if (response.code() == 401) {
+                        Result.Unauthorized
                     } else {
                         Result.Error("Failed to upload image: ${response.code()}")
                     }
@@ -59,14 +62,15 @@ class ImageRepositoryImpl @Inject constructor(
         val initialToken = (tokenResult as Result.Success).data
         val initialResult = apiCall(initialToken)
 
-        return if (initialResult is Result.Error && initialResult.getErrorMsg()
-                .contains("401")
-        ) {
-            val refreshTokenResult = onRefreshToken()
-            if (refreshTokenResult is Result.Error) return refreshTokenResult
+        return if (initialResult is Result.Unauthorized) {
+            when(val refreshTokenResult = onRefreshToken()){
+                is Result.Success -> {
+                    val newToken = (refreshTokenResult as Result.Success).data
+                    apiCall(newToken)
+                }
+                else -> return refreshTokenResult as Result<T>
+            }
 
-            val newToken = (refreshTokenResult as Result.Success).data
-            apiCall(newToken)
         } else {
             initialResult
         }
