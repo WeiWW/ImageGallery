@@ -7,6 +7,9 @@ import com.example.imagegallery.data.source.local.SecureTokenManager
 import com.example.imagegallery.data.source.remote.auth.AuthApi
 import com.example.imagegallery.data.source.remote.auth.TokenRemoteDataSource
 import com.example.imagegallery.data.source.remote.auth.TokenRemoteDataSourceImpl
+import com.example.imagegallery.data.source.remote.image.ImageApi
+import com.example.imagegallery.data.source.remote.image.ImageDataSource
+import com.example.imagegallery.data.source.remote.image.ImageDataSourceImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -34,5 +37,11 @@ object DataSourceModule {
     @Singleton
     fun provideSecureTokenManager(@ApplicationContext context: Context): SecureTokenManager {
         return SecureTokenManager(context = context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideImageDataSource(imageApi: ImageApi): ImageDataSource {
+        return ImageDataSourceImpl(imageApi = imageApi)
     }
 }

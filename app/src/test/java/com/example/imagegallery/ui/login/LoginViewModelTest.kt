@@ -8,7 +8,6 @@ import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
 import io.mockk.unmockkAll
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
 import org.amshove.kluent.shouldBe
 import org.amshove.kluent.shouldBeEqualTo
 import org.junit.After
@@ -97,7 +96,7 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun `onLoginClick updates login success when TokenRepository return success`() = runTest {
+    fun `onLoginClick updates login success when TokenRepository return success`() {
 
         viewModel.onUsernameChange(VALID_USER)
         viewModel.onPasswordChange(VALID_PASS)
@@ -111,7 +110,7 @@ class LoginViewModelTest {
     }
 
     @Test
-    fun `onLoginClick updates login failed when TokenRepository return error`() = runTest {
+    fun `onLoginClick updates login failed when TokenRepository return error`() {
         viewModel.onUsernameChange(VALID_USER)
         viewModel.onPasswordChange(VALID_PASS)
 
@@ -128,7 +127,7 @@ class LoginViewModelTest {
         viewModel.uiState.value.errorMessage shouldBeEqualTo "Login failed. Please try again."
     }
 
-    companion object{
+    companion object {
         private const val VALID_USER = "validUser"
         private const val VALID_PASS = "validPass123"
         private const val INVALID_USER = "invalid"
