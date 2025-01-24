@@ -15,6 +15,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
@@ -25,7 +26,7 @@ import com.example.imagegallery.R
 
 @Composable
 fun LoginScreen(
-    onNavigateGallery: () -> Unit,
+    onLoginSuccess: () -> Unit,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -93,7 +94,7 @@ fun LoginScreen(
         }
 
         if (uiState.loginSuccess) {
-            onNavigateGallery()
+            onLoginSuccess()
         }
     }
 }
