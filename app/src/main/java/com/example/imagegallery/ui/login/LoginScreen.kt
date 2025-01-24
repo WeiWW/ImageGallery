@@ -29,6 +29,7 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(
         modifier = Modifier
@@ -72,7 +73,10 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             enabled = uiState.isValidUsrName && uiState.isValidPwd,
-            onClick = { viewModel.onLoginClick() },
+            onClick = {
+                keyboardController?.hide()
+                viewModel.onLoginClick()
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Login")
