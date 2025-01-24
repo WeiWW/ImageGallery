@@ -101,7 +101,7 @@ fun GalleryScreen(
 
         selectedImageUri.value?.let { uri ->
             LaunchedEffect(uri) {
-                viewModel.updateImage(context, uri)
+                viewModel.uploadImage(context, uri)
                 selectedImageUri.value = null
             }
         }
