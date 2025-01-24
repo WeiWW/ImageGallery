@@ -1,6 +1,7 @@
 package com.example.imagegallery.ui.gallery
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -37,20 +38,39 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.example.imagegallery.ui.login.LoginScreen
+import com.example.imagegallery.ui.previewdata.GalleryUiStatePreviewProvider
+import com.example.imagegallery.ui.theme.ImageGalleryTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun GalleryScreen(
     viewModel: GalleryViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    GalleryScreen(
+        uiState,
+        onRefresh = { viewModel.fetchImages() },
+        onUpdateAuthState = { viewModel.updateAuthState(it) },
+        onUpLoadImage = { context, uri -> viewModel.uploadImage(context, uri) })
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
+@Composable
+fun GalleryScreen(
+    uiState: GalleryUiState,
+    onUpdateAuthState: (Boolean) -> Unit,
+    onUpLoadImage: (Context, Uri) -> Unit,
+    onRefresh: () -> Unit
+) {
     val snackBarHostState = remember { SnackbarHostState() }
     val selectedImageUri = remember { mutableStateOf<Uri?>(null) }
 
@@ -94,21 +114,21 @@ fun GalleryScreen(
                         .aspectRatio(1f),
                     shape = RoundedCornerShape(16.dp),
                 ) {
-                    LoginScreen(onLoginSuccess = { viewModel.updateAuthState(false) })
+                    LoginScreen(onLoginSuccess = { onUpdateAuthState(false) })
                 }
             }
         }
 
         selectedImageUri.value?.let { uri ->
             LaunchedEffect(uri) {
-                viewModel.uploadImage(context, uri)
+                onUpLoadImage(context, uri)
                 selectedImageUri.value = null
             }
         }
 
         PullToRefreshBox(
             isRefreshing = uiState.isLoading,
-            onRefresh = { viewModel.fetchImages() },
+            onRefresh = onRefresh,
         ) {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
@@ -128,5 +148,20 @@ fun GalleryScreen(
                 }
             }
         }
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun GalleryScreenPreview(
+    @PreviewParameter(GalleryUiStatePreviewProvider::class) uiState: GalleryUiState
+) {
+    ImageGalleryTheme {
+        GalleryScreen(
+            uiState,
+            onUpdateAuthState = {},
+            onUpLoadImage = { _, _ -> },
+            onRefresh = {}
+        )
     }
 }
