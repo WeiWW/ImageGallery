@@ -125,7 +125,7 @@ class TokenRepositoryImplTest {
 
         val result = tokenRepository.getToken()
 
-        assertEquals(Result.Error("Access token is null"), result)
+        result `should be instance of` Result.Unauthorized::class
         coVerify(exactly = 1) { tokenLocalDataSource.getAccessToken() }
     }
 
@@ -168,7 +168,7 @@ class TokenRepositoryImplTest {
 
         val result = tokenRepository.refreshToken()
 
-        assertEquals(Result.Error("Refresh token is null"), result)
+        result `should be instance of` Result.Unauthorized::class
         coVerify (exactly = 1){ tokenLocalDataSource.getRefreshToken() }
         coVerify(exactly = 0){ tokenRemoteDataSource.refreshToken(any()) }
     }
