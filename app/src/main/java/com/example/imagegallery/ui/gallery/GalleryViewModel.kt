@@ -36,15 +36,23 @@ class GalleryViewModel @Inject constructor(
     fun fetchImages() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
-            val result = imageRepository.getImages()
-            if (result is Result.Success) {
-                _uiState.update { it.copy(images = result.data, isLoading = false, error = null) }
-            } else {
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        error = (result as Result.Error).errorMsg
-                    )
+            when (val result = imageRepository.getImages()) {
+                is Result.Success -> {
+                    _uiState.update {
+                        it.copy(
+                            images = result.data,
+                            isLoading = false,
+                            error = null
+                        )
+                    }
+                }
+
+                is Result.Unauthorized -> {
+                    _uiState.update { it.copy(isLoading = false, isAuthError = true) }
+                }
+
+                is Result.Error -> {
+                    _uiState.update { it.copy(isLoading = false, error = result.errorMsg) }
                 }
             }
         }
@@ -66,6 +74,10 @@ class GalleryViewModel @Inject constructor(
                 is Result.Success -> fetchImages()
                 is Result.Error -> _uiState.update {
                     it.copy(isLoading = false, error = result.errorMsg)
+                }
+
+                Result.Unauthorized -> {
+                    _uiState.update { it.copy(isLoading = false, isAuthError = true) }
                 }
             }
         }
@@ -99,5 +111,6 @@ class GalleryViewModel @Inject constructor(
 data class GalleryUiState(
     val images: List<Image> = emptyList(),
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
+    val isAuthError: Boolean = false
 )
