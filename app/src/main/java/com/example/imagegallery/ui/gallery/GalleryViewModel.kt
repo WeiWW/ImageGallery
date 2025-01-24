@@ -63,8 +63,7 @@ class GalleryViewModel @Inject constructor(
             }
         }
     }
-
-    fun updateImage(context: Context, uri: Uri) {
+    fun uploadImage(context: Context, uri: Uri) {
         _uiState.update { it.copy(isLoading = true, error = null, hasAuthError = false) }
         viewModelScope.launch {
             val byteArray = convertUriToByteArray(context, uri)

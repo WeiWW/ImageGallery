@@ -90,7 +90,7 @@ class GalleryViewModelTest {
         coEvery { imageRepository.uploadImage(any()) } returns Result.Success(Unit)
 
         // Act
-        spyViewModel.updateImage(context, uri)
+        spyViewModel.uploadImage(context, uri)
 
         coVerify(exactly = 1) { spyViewModel.fetchImages() }
         coVerify(exactly = 1) { spyViewModel.convertUriToByteArray(any(), any()) }
@@ -109,7 +109,7 @@ class GalleryViewModelTest {
             coEvery { convertUriToByteArray(context, uri) } returns null
         }
 
-        spyViewModel.updateImage(context, uri)
+        spyViewModel.uploadImage(context, uri)
 
         coVerify(exactly = 1) { spyViewModel.convertUriToByteArray(any(), any()) }
         coVerify(exactly = 0) { imageRepository.uploadImage(any()) }
@@ -129,7 +129,7 @@ class GalleryViewModelTest {
             coEvery { convertUriToByteArray(context, uri) } returns ByteArray(10)
         }
 
-        spyViewModel.updateImage(context, uri)
+        spyViewModel.uploadImage(context, uri)
         coVerify(exactly = 1) { spyViewModel.convertUriToByteArray(any(), any()) }
         coVerify(exactly = 1) { imageRepository.uploadImage(any()) }
         coVerify(exactly = 0) { spyViewModel.fetchImages() }
