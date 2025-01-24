@@ -40,7 +40,7 @@ class TokenRepositoryImpl @Inject constructor(
     override suspend fun getToken(): Result<String> = withContext(ioDispatcher) {
         // Get the access token from the local data source
         val accessToken = tokenLocalDataSource.getAccessToken()
-            ?: return@withContext Result.Error("Access token is null")
+            ?: return@withContext Result.Unauthorized
         return@withContext Result.Success(accessToken)
     }
 
@@ -51,23 +51,24 @@ class TokenRepositoryImpl @Inject constructor(
     override suspend fun refreshToken(): Result<String>  = withContext(ioDispatcher) {
         // Get the refresh token from the local data source
         val refreshToken = tokenLocalDataSource.getRefreshToken()
-            ?: return@withContext Result.Error("Refresh token is null")
+            ?: return@withContext Result.Unauthorized
 
         // Get the new access token from the remote data source using the refresh token
         return@withContext try {
             val response = tokenRemoteDataSource.refreshToken(refreshToken)
             val body = response.body()
-            if (response.isSuccessful && body != null) {
-                // Save the new access token to the local data source
-                tokenLocalDataSource.saveTokens(
-                    accessToken = body.accessToken,
-                    refreshToken = body.refreshToken
-                )
-                Result.Success(body.accessToken)
-            } else if(response.code() == 401){
-                Result.Unauthorized
-            }else {
-                Result.Error(response.errorBody()?.string() ?: "Unknown error")
+            when {
+                response.isSuccessful && body != null -> {
+                    // Save the new access token to the local data source
+                    tokenLocalDataSource.saveTokens(
+                        accessToken = body.accessToken,
+                        refreshToken = body.refreshToken
+                    )
+                    Result.Success(body.accessToken)
+                }
+
+                response.code() == 401 -> Result.Unauthorized
+                else -> Result.Error(response.errorBody()?.string() ?: "Unknown error")
             }
         } catch (e: Exception) {
             Result.Error(e.message ?: "An error occurred while refreshing the token")

@@ -57,15 +57,15 @@ class ImageRepositoryImpl @Inject constructor(
         onRefreshToken: suspend () -> Result<String>
     ): Result<T> {
         val tokenResult = tokenRepository.getToken()
-        if (tokenResult is Result.Error) return tokenResult
+        if (tokenResult !is Result.Success) return tokenResult as Result<T>
 
-        val initialToken = (tokenResult as Result.Success).data
+        val initialToken = tokenResult.data
         val initialResult = apiCall(initialToken)
 
         return if (initialResult is Result.Unauthorized) {
             when(val refreshTokenResult = onRefreshToken()){
                 is Result.Success -> {
-                    val newToken = (refreshTokenResult as Result.Success).data
+                    val newToken = refreshTokenResult.data
                     apiCall(newToken)
                 }
                 else -> return refreshTokenResult as Result<T>
