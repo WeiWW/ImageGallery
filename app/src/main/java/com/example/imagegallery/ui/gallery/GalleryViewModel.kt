@@ -33,6 +33,11 @@ class GalleryViewModel @Inject constructor(
         fetchImages()
     }
 
+    fun updateAuthState(hasAuthError: Boolean) {
+        _uiState.update { it.copy(hasAuthError = hasAuthError) }
+        fetchImages()
+    }
+
     fun fetchImages() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
@@ -42,13 +47,14 @@ class GalleryViewModel @Inject constructor(
                         it.copy(
                             images = result.data,
                             isLoading = false,
-                            error = null
+                            error = null,
+                            hasAuthError = false
                         )
                     }
                 }
 
                 is Result.Unauthorized -> {
-                    _uiState.update { it.copy(isLoading = false, isAuthError = true) }
+                    _uiState.update { it.copy(isLoading = false, hasAuthError = true) }
                 }
 
                 is Result.Error -> {
@@ -59,7 +65,7 @@ class GalleryViewModel @Inject constructor(
     }
 
     fun updateImage(context: Context, uri: Uri) {
-        _uiState.update { it.copy(isLoading = true, error = null) }
+        _uiState.update { it.copy(isLoading = true, error = null, hasAuthError = false) }
         viewModelScope.launch {
             val byteArray = convertUriToByteArray(context, uri)
 
@@ -73,11 +79,11 @@ class GalleryViewModel @Inject constructor(
             when (val result = imageRepository.uploadImage(byteArray)) {
                 is Result.Success -> fetchImages()
                 is Result.Error -> _uiState.update {
-                    it.copy(isLoading = false, error = result.errorMsg)
+                    it.copy(isLoading = false, error = result.errorMsg, hasAuthError = false)
                 }
 
                 Result.Unauthorized -> {
-                    _uiState.update { it.copy(isLoading = false, isAuthError = true) }
+                    _uiState.update { it.copy(isLoading = false, hasAuthError = true) }
                 }
             }
         }
@@ -112,5 +118,5 @@ data class GalleryUiState(
     val images: List<Image> = emptyList(),
     val isLoading: Boolean = false,
     val error: String? = null,
-    val isAuthError: Boolean = false
+    val hasAuthError: Boolean = false
 )
