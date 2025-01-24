@@ -47,7 +47,7 @@ class ImageRepositoryImplTest {
     fun `getImage returns error when tokenRepository returns error`() = runBlocking {
         coEvery { tokenRepository.getToken() } returns Result.Error("error")
 
-        val result = imageRepository.getImages(ACCESS_TOKEN)
+        val result = imageRepository.getImages()
 
         result shouldBeInstanceOf Result.Error::class
         coVerify(exactly = 1) { tokenRepository.getToken() }
@@ -65,7 +65,7 @@ class ImageRepositoryImplTest {
             }
         }
 
-        val result = imageRepository.getImages(ACCESS_TOKEN)
+        val result = imageRepository.getImages()
 
         result shouldBeInstanceOf Result.Success::class
         (result as Result.Success).data shouldBeInstanceOf List::class
@@ -82,7 +82,7 @@ class ImageRepositoryImplTest {
             every { code() } returns 500
         }
 
-        val result = imageRepository.getImages(ACCESS_TOKEN)
+        val result = imageRepository.getImages()
 
         result shouldBeInstanceOf Result.Error::class
         coVerify(exactly = 1) { tokenRepository.getToken() }
@@ -107,7 +107,7 @@ class ImageRepositoryImplTest {
         )
         coEvery { tokenRepository.refreshToken() } returns Result.Success("new_access_token")
 
-        val result = imageRepository.getImages(ACCESS_TOKEN)
+        val result = imageRepository.getImages()
 
         result shouldBeInstanceOf Result.Success::class
         (result as Result.Success).data shouldBeInstanceOf List::class
@@ -125,7 +125,7 @@ class ImageRepositoryImplTest {
         }
         coEvery { tokenRepository.refreshToken() } returns Result.Error("error")
 
-        val result = imageRepository.getImages(ACCESS_TOKEN)
+        val result = imageRepository.getImages()
 
         result shouldBeInstanceOf Result.Error::class
         coVerify(exactly = 1) { tokenRepository.getToken() }
@@ -148,7 +148,7 @@ class ImageRepositoryImplTest {
         )
         coEvery { tokenRepository.refreshToken() } returns Result.Success("new_access_token")
 
-        val result = imageRepository.getImages(ACCESS_TOKEN)
+        val result = imageRepository.getImages()
 
         result shouldBeInstanceOf Result.Error::class
         coVerify(exactly = 1) { tokenRepository.getToken() }
@@ -160,7 +160,7 @@ class ImageRepositoryImplTest {
     fun `uploadImage return error when tokenRepository returns error`() = runBlocking {
         coEvery { tokenRepository.getToken() } returns Result.Error("error")
 
-        val result = imageRepository.uploadImage(ACCESS_TOKEN, IMAGE)
+        val result = imageRepository.uploadImage(IMAGE)
 
         result shouldBeInstanceOf Result.Error::class
         coVerify(exactly = 1) { tokenRepository.getToken() }
@@ -174,7 +174,7 @@ class ImageRepositoryImplTest {
             every { isSuccessful } returns true
         }
 
-        val result = imageRepository.uploadImage(ACCESS_TOKEN, IMAGE)
+        val result = imageRepository.uploadImage(IMAGE)
 
         result shouldBeInstanceOf Result.Success::class
         coVerify(exactly = 1) { tokenRepository.getToken() }
@@ -190,7 +190,7 @@ class ImageRepositoryImplTest {
             every { code() } returns 500
         }
 
-        val result = imageRepository.uploadImage(ACCESS_TOKEN, IMAGE)
+        val result = imageRepository.uploadImage(IMAGE)
 
         result shouldBeInstanceOf Result.Error::class
         coVerify(exactly = 1) { tokenRepository.getToken() }
@@ -212,7 +212,7 @@ class ImageRepositoryImplTest {
         )
         coEvery { tokenRepository.refreshToken() } returns Result.Success("new_access_token")
 
-        val result = imageRepository.uploadImage(ACCESS_TOKEN, IMAGE)
+        val result = imageRepository.uploadImage(IMAGE)
 
         result shouldBeInstanceOf Result.Success::class
         coVerify(exactly = 1) { tokenRepository.getToken() }
@@ -235,7 +235,7 @@ class ImageRepositoryImplTest {
         )
         coEvery { tokenRepository.refreshToken() } returns Result.Success("new_access_token")
 
-        val result = imageRepository.uploadImage(ACCESS_TOKEN, IMAGE)
+        val result = imageRepository.uploadImage(IMAGE)
 
         result shouldBeInstanceOf Result.Error::class
         coVerify(exactly = 1) { tokenRepository.getToken() }

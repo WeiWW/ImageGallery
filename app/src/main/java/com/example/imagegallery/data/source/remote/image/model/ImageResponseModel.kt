@@ -14,7 +14,7 @@ data class UploadSuccess(
 data class ImageList(
     @SerializedName("success")
     val success: Boolean,
-    @SerializedName("message")
+    @SerializedName("images")
     val images: List<Image>
 )
 

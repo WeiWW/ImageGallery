@@ -4,14 +4,14 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.imagegallery.GalleryScreen
+import com.example.imagegallery.ui.gallery.GalleryScreen
 import com.example.imagegallery.ui.login.LoginScreen
 
 
 @Composable
 fun AppNavHost(navController: NavHostController) {
     NavHost(navController = navController, startDestination = Screen.Gallery.route) {
-        composable(Screen.Gallery.route) { GalleryScreen(navController) }
+        composable(Screen.Gallery.route) { GalleryScreen() }
         composable(Screen.Login.route) { LoginScreen({ navController.navigate(Screen.Gallery.route) }) }
 
     }

@@ -37,6 +37,10 @@ android {
         compose = true
         buildConfig = true
     }
+
+    testOptions{
+        unitTests.isReturnDefaultValues = true
+    }
 }
 kotlin {
     jvmToolchain(17)
@@ -74,6 +78,9 @@ dependencies {
     ksp(libs.hilt.compiler)
     ksp(libs.androidx.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
+
+    // Coil
+    implementation(libs.coil.compose)
 
     // Testing
     testImplementation(libs.junit)

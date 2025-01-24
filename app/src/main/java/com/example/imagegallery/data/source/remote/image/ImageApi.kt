@@ -24,8 +24,4 @@ interface ImageApi {
 
     @GET("/images")
     suspend fun getImages(@Header("Authorization") token: String):Response<ImageList>
-
-    @Headers("Accept: image/jpeg")
-    @GET("/images/{path}")
-    suspend fun getImage(@Path("path") path: String)
 }

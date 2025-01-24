@@ -16,7 +16,7 @@ class ImageRepositoryImpl @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ImageRepository {
 
-    override suspend fun getImages(accessToken: String): Result<List<Image>> {
+    override suspend fun getImages(): Result<List<Image>> {
         return withContext(ioDispatcher) {
             executeWithTokenRetry(
                 apiCall = { token ->
@@ -33,7 +33,7 @@ class ImageRepositoryImpl @Inject constructor(
     }
 
 
-    override suspend fun uploadImage(accessToken: String, image: ByteArray): Result<Unit> {
+    override suspend fun uploadImage(image: ByteArray): Result<Unit> {
         return withContext(ioDispatcher) {
             executeWithTokenRetry(
                 apiCall = { token ->
@@ -59,7 +59,9 @@ class ImageRepositoryImpl @Inject constructor(
         val initialToken = (tokenResult as Result.Success).data
         val initialResult = apiCall(initialToken)
 
-        return if (initialResult is Result.Error && (initialResult as Result.Error).getErrorMsg().contains("401")) {
+        return if (initialResult is Result.Error && initialResult.getErrorMsg()
+                .contains("401")
+        ) {
             val refreshTokenResult = onRefreshToken()
             if (refreshTokenResult is Result.Error) return refreshTokenResult
 
