@@ -1,4 +1,4 @@
-package com.example.imagegallery.data.repository
+package com.example.imagegallery.data.repository.token
 
 import com.example.imagegallery.MainDispatcherRule
 import com.example.imagegallery.data.common.Result

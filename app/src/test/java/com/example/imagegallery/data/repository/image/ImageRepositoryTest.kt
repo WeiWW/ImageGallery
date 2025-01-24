@@ -2,7 +2,7 @@ package com.example.imagegallery.data.repository.image
 
 import com.example.imagegallery.MainDispatcherRule
 import com.example.imagegallery.data.common.Result
-import com.example.imagegallery.data.repository.TokenRepository
+import com.example.imagegallery.data.repository.token.TokenRepository
 import com.example.imagegallery.data.source.remote.image.ImageDataSource
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery

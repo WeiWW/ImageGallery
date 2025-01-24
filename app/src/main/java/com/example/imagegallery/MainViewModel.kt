@@ -3,7 +3,7 @@ package com.example.imagegallery
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.imagegallery.data.common.Result
-import com.example.imagegallery.data.repository.TokenRepository
+import com.example.imagegallery.data.repository.token.TokenRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

@@ -1,7 +1,7 @@
 package com.example.imagegallery
 
 import com.example.imagegallery.data.common.Result
-import com.example.imagegallery.data.repository.TokenRepository
+import com.example.imagegallery.data.repository.token.TokenRepository
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
