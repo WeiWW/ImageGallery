@@ -18,10 +18,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.imagegallery.R
+import com.example.imagegallery.ui.previewdata.LoginUiStatePreviewProvider
 
 
 @Composable
@@ -30,8 +33,24 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val keyboardController = LocalSoftwareKeyboardController.current
+    LoginScreen(
+        uiState = uiState,
+        onLoginSuccess = onLoginSuccess,
+        onUserNameChange = { viewModel.onUsernameChange(it) },
+        onPasswordChange = { viewModel.onPasswordChange(it) },
+        onLoginClick = { viewModel.onLoginClick() }
+    )
+}
 
+@Composable
+fun LoginScreen(
+    uiState: LoginUiState,
+    onLoginSuccess: () -> Unit,
+    onUserNameChange: (String) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onLoginClick: () -> Unit
+) {
+    val keyboardController = LocalSoftwareKeyboardController.current
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -42,7 +61,7 @@ fun LoginScreen(
         TextField(
             isError = uiState.username.isNotEmpty() && !uiState.isValidUsrName,
             value = uiState.username,
-            onValueChange = { viewModel.onUsernameChange(it) },
+            onValueChange = onUserNameChange,
             label = { Text("Username") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -58,7 +77,7 @@ fun LoginScreen(
         TextField(
             isError = uiState.password.isNotEmpty() && !uiState.isValidPwd,
             value = uiState.password,
-            onValueChange = { viewModel.onPasswordChange(it) },
+            onValueChange = onPasswordChange,
             label = { Text("Password") },
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
@@ -76,7 +95,7 @@ fun LoginScreen(
             enabled = uiState.isValidUsrName && uiState.isValidPwd,
             onClick = {
                 keyboardController?.hide()
-                viewModel.onLoginClick()
+                onLoginClick()
             },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -97,4 +116,17 @@ fun LoginScreen(
             onLoginSuccess()
         }
     }
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun LoginScreenPreview(
+    @PreviewParameter(LoginUiStatePreviewProvider::class) uiState: LoginUiState
+) {
+    LoginScreen(
+        uiState = uiState,
+        onLoginSuccess = {},
+        onUserNameChange = {},
+        onPasswordChange = {},
+        onLoginClick = {})
 }
