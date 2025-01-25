@@ -6,6 +6,7 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.aspectRatio
@@ -28,6 +29,7 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -38,6 +40,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
@@ -45,6 +48,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.example.imagegallery.data.common.TestTags
 import com.example.imagegallery.ui.login.LoginScreen
 import com.example.imagegallery.ui.previewdata.GalleryUiStatePreviewProvider
 import com.example.imagegallery.ui.theme.ImageGalleryTheme
@@ -84,10 +88,12 @@ fun GalleryScreen(
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .padding(WindowInsets.statusBars.asPaddingValues()),
+            .padding(WindowInsets.statusBars.asPaddingValues())
+            .testTag(TestTags.GALLERY_SCREEN),
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { imagePickerLauncher.launch("image/*") },
+                modifier = Modifier.testTag(TestTags.FAB_ADD_IMAGE)
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add Image")
             }
@@ -111,7 +117,8 @@ fun GalleryScreen(
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .aspectRatio(1f),
+                        .aspectRatio(1f)
+                        .testTag(TestTags.DIALOG_LOGIN),
                     shape = RoundedCornerShape(16.dp),
                 ) {
                     LoginScreen(onLoginSuccess = { onUpdateAuthState(false) })
@@ -133,7 +140,7 @@ fun GalleryScreen(
             LazyVerticalGrid(
                 columns = GridCells.Fixed(3),
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxSize().testTag(TestTags.IMAGE_GRID)
             ) {
                 items(uiState.images) { image ->
                     AsyncImage(
