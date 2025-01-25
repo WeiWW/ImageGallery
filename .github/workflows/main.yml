@@ -42,18 +42,19 @@ jobs:
     - name: Build APK
       run:  ./gradlew assembleDebug assembleAndroidTest
 
-    - name: Set up gcloud
-      uses: google-github-actions/setup-gcloud@v0
+    - name: Decode Google Services Config
+      env:
+        GOOGLE_SERVICES_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+      run: echo "$GOOGLE_SERVICES_JSON" | base64 -d > app/google-services.json
+
+    - name: Run Firebase Test Lab
+      uses: FirebaseExtended/firebase-testlab-github-action@v1.4
       with:
-        service_account_key: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-        project_id: ${{ secrets.FIREBASE_PROJECT_ID }}
-
-    - name: Run Instrumentation Tests in Firebase Test Lab
-      run: >
-        gcloud auth activate-service-account firebase-adminsdk-fbsvc@imagegallery-d0e8e.iam.gserviceaccount.com --key-file=${{ secrets.FIREBASE_SERVICE_ACCOUNT }} --project=${{ secrets.FIREBASE_PROJECT_ID }}
-        gcloud --quiet config set project ${{ secrets.FIREBASE_PROJECT_ID }}
-        gcloud firebase test android run --app ./app/build/outputs/apk/debug/app-debug.apk --test ./app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
-
+        project-id: ${{ secrets.FIREBASE_PROJECT_ID }}
+        service-account-key: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        debug-apk: app/build/outputs/apk/debug/app-debug.apk
+        test-apk: app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
+    
     - name: Upload Test Results
       if: always()
       uses: actions/upload-artifact@v3
