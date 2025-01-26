@@ -36,11 +36,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.example.imagegallery.data.common.TestTags
 import com.example.imagegallery.ui.gallery.componet.LoginDialog
 import com.example.imagegallery.ui.previewdata.GalleryUiStatePreviewProvider
 import com.example.imagegallery.ui.theme.ImageGalleryTheme
@@ -80,10 +82,12 @@ fun GalleryScreen(
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .padding(WindowInsets.statusBars.asPaddingValues()),
+            .padding(WindowInsets.statusBars.asPaddingValues())
+            .testTag(TestTags.GALLERY_SCREEN),
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { imagePickerLauncher.launch("image/*") },
+                modifier = Modifier.testTag(TestTags.FAB_ADD_IMAGE)
             ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "Add Image")
             }
@@ -115,6 +119,7 @@ fun GalleryScreen(
                 columns = GridCells.Fixed(3),
                 modifier = Modifier
                     .fillMaxSize()
+                    .testTag(TestTags.IMAGE_GRID)
             ) {
                 items(uiState.images) { image ->
                     AsyncImage(

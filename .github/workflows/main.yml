@@ -34,11 +34,14 @@ jobs:
           ${{ runner.os }}-gradle-
     
     - name: Run Android Lints
-      run: ./gradlew lintDebug
-      
+      run: ./gradlew lintRelease
+
     - name: Run Unit Tests
-      run: ./gradlew testDebugUnitTest
-        
+      run: ./gradlew testReleaseUnitTest
+
+    - name: Build APK
+      run:  ./gradlew assembleDebug assembleAndroidTest
+    
     - name: Upload Test Results
       if: always()
       uses: actions/upload-artifact@v3
@@ -46,4 +49,4 @@ jobs:
         name: test-results
         path: |
           app/build/reports/tests/
-          app/build/reports/lint-results-debug.html
+          app/build/reports/lint-results-release.html

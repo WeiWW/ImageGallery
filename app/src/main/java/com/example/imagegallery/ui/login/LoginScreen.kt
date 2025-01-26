@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.imagegallery.R
+import com.example.imagegallery.data.common.TestTags
 import com.example.imagegallery.ui.previewdata.LoginUiStatePreviewProvider
 
 
@@ -63,14 +65,14 @@ fun LoginScreen(
             value = uiState.username,
             onValueChange = onUserNameChange,
             label = { Text("Username") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().testTag(TestTags.TEXT_FIELD_USERNAME)
         )
         if (uiState.username.isNotEmpty() && !uiState.isValidUsrName) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = stringResource(R.string.invalid_input_error_msg),
                 color = Color.Red,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().testTag(TestTags.TEXT_FIELD_USERNAME_ERROR)
             )
         }
         Spacer(modifier = Modifier.height(8.dp))
@@ -80,14 +82,14 @@ fun LoginScreen(
             onValueChange = onPasswordChange,
             label = { Text("Password") },
             visualTransformation = PasswordVisualTransformation(),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().testTag(TestTags.TEXT_FIELD_PASSWORD)
         )
         if (uiState.password.isNotEmpty() && !uiState.isValidPwd) {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = stringResource(R.string.invalid_input_error_msg),
                 color = Color.Red,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().testTag(TestTags.TEXT_FIELD_PASSWORD_ERROR)
             )
         }
         Spacer(modifier = Modifier.height(16.dp))
@@ -97,7 +99,7 @@ fun LoginScreen(
                 keyboardController?.hide()
                 onLoginClick()
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().testTag(TestTags.BUTTON_LOGIN)
         ) {
             Text("Login")
         }
@@ -108,7 +110,7 @@ fun LoginScreen(
             Text(
                 text = it,
                 color = Color.Red,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth().testTag(TestTags.LOGIN_ERROR_MESSAGE)
             )
         }
 
